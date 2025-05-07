@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 export default function Result() {
   const { jobId } = useParams();

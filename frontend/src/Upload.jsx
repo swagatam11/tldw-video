@@ -1,166 +1,143 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-export default function Upload() {
-  const [file, setFile] = useState(null);
-  const [url, setUrl] = useState("");
-  const [prompt, setPrompt] = useState("");
-  const [jobId, setJobId] = useState(null);
+export default function Result() {
+  const { jobId } = useParams();
+  const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("transcript");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
 
-  const handleUploadFile = async () => {
-    setError(null);
-    if (!file) {
-      setError("Please select a video file.");
-      return;
-    }
+  useEffect(() => {
+    const fetchResult = async () => {
+      try {
+        const response = await fetch(`${BACKEND_BASE_URL}/result/${jobId}`);
+        const data = await response.json();
 
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch(`${BACKEND_BASE_URL}/upload?prompt=${encodeURIComponent(prompt)}`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setJobId(data.job_id);
-        setError(null);
-      } else {
-        setError(data.error || "Upload failed.");
+        if (data.transcript && data.summary) {
+          setResult(data);
+        } else {
+          setError("Results not available.");
+        }
+      } catch {
+        setError("Failed to load results.");
       }
-    } catch {
-      setError("Error uploading file.");
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    fetchResult();
+  }, [jobId]);
+
+  const submitQuestion = async () => {
+    if (!question.trim()) return;
+
+    const response = await fetch(`${BACKEND_BASE_URL}/ask/${jobId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question }),
+    });
+
+    const data = await response.json();
+    setAnswer(data.answer || "No answer available.");
   };
 
-  const handleUploadUrl = async () => {
-    setError(null);
-    if (!url.trim()) {
-      setError("Please paste a valid URL.");
-      return;
-    }
+  if (error) {
+    return (
+      <main>
+        <h1>Error</h1>
+        <p style={{ color: "red" }}>{error}</p>
+      </main>
+    );
+  }
 
-    setLoading(true);
-
-    try {
-      const response = await fetch("${BACKEND_BASE_URL}/upload-url", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, prompt }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setJobId(data.job_id);
-        setError(null);
-      } else {
-        setError(data.error || "URL upload failed.");
-      }
-    } catch {
-      setError("Error uploading from URL.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!result) {
+    return (
+      <main>
+        <h1>Loading Results...</h1>
+      </main>
+    );
+  }
 
   return (
-    <main className="hero-section">
-      <div className="hero-content">
-        <h1 style={{ marginBottom: "0.3rem" }}>
-          TLD<em>W</em>
-        </h1>
-        <h2>Too Long, Didn't watch</h2>
-        <p className="subtitle" style={{ marginTop: "5.5rem" }}>
-          You can upload a file or share a link to your video.
-        </p>
+    <main style={{ textAlign: "center" }}>
+      <h1>Transcript & Summary</h1>
 
-        <input
-          type="text"
-          placeholder="Optional: What is this video about?"
-          value={prompt}
-          onChange={(e) => {
-            setPrompt(e.target.value);
-            setError(null);
-          }}
-          style={{
-            width: "100%",
-            maxWidth: "600px",
-            margin: "1.5rem auto 2rem",
-            display: "block",
-          }}
-        />
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
+        <nav>
+          <ul style={{ display: "flex", justifyContent: "center", gap: "1rem", listStyle: "none", padding: 0, margin: 0 }}>
+            <li>
+              <a
+                role="button"
+                href="#"
+                onClick={() => setActiveTab("transcript")}
+                aria-current={activeTab === "transcript" ? "page" : undefined}
+              >
+                Full Transcript
+              </a>
+            </li>
+            <li>
+              <a
+                role="button"
+                href="#"
+                onClick={() => setActiveTab("summary")}
+                aria-current={activeTab === "summary" ? "page" : undefined}
+              >
+                Summary
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
 
-      {!jobId && (
-        <div
-          className="upload-columns"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            gap: "2rem",
-            maxWidth: "900px",
-            margin: "6rem auto",
-            flexDirection: window.innerWidth < 600 ? "column" : "row",
-          }}
-        >
-          {/* File Upload Section */}
-          <div style={{ minWidth: "260px", textAlign: "center" }}>
-            <input
-              type="file"
-              accept="video/*"
-              onChange={(e) => {
-                setFile(e.target.files[0]);
-                setError(null);
-              }}
-              style={{ marginBottom: "1rem" }}
-            />
-            <button onClick={handleUploadFile}>Upload File</button>
-          </div>
+      <article>
+        {activeTab === "transcript" ? (
+          <pre>{result.transcript}</pre>
+        ) : (
+          <pre>{result.summary}</pre>
+        )}
+      </article>
 
-          {/* URL Upload Section */}
-          <div style={{ minWidth: "260px", textAlign: "center" }}>
-            <input
-              type="text"
-              placeholder="Paste YouTube, Vimeo, TED link..."
-              value={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-                setError(null);
-              }}
-              style={{ marginBottom: "1rem", width: "100%" }}
-            />
-            <button onClick={handleUploadUrl}>Submit URL</button>
-          </div>
+      <div className="download-buttons" style={{ display: "flex", justifyContent: "center", gap: "1rem", margin: "2rem 0" }}>
+        <button onClick={() => downloadFile("transcript.txt", result.transcript)}>
+          Download Transcript
+        </button>
+        <button onClick={() => downloadFile("summary.txt", result.summary)}>
+          Download Summary
+        </button>
+      </div>
+
+      <hr />
+
+      <section style={{ marginTop: "2rem", textAlign: "center" }}>
+        <h2>Ask a question about this video</h2>
+        <div className="question-box" style={{ display: "flex", justifyContent: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+          <input
+            type="text"
+            placeholder="Type your question..."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+          />
+          <button onClick={submitQuestion}>Submit</button>
         </div>
-      )}
 
-      {jobId && (
-        <div className="success-message" style={{ textAlign: "center", marginTop: "2rem" }}>
-          ✅ Upload successful!
-          <br />
-          <a href={`/status/${jobId}`}>
-            <button style={{ marginTop: "1rem" }}>Proceed</button>
-          </a>
-        </div>
-      )}
-
-      {loading && (
-        <p style={{ color: "#00ffaa", fontWeight: "bold", textAlign: "center", marginTop: "2rem" }}>
-          Uploading… please wait
-        </p>
-      )}
-      {error && (
-        <p style={{ color: "red", marginTop: "1rem", textAlign: "center" }}>{error}</p>
-      )}
+        {answer && (
+          <blockquote style={{ marginTop: "1rem" }}>
+            <strong>Answer:</strong><br />
+            {answer}
+          </blockquote>
+        )}
+      </section>
     </main>
   );
+}
+
+function downloadFile(filename, content) {
+  const blob = new Blob([content], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
