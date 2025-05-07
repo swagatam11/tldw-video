@@ -1,0 +1,14 @@
+# Ignore Python environment and compiled files
+backend/venv/
+__pycache__/
+*.pyc
+.env
+
+# Ignore node modules
+frontend/node_modules/
+dist/
+.vite/
+*.log
+
+# Mac system files
+.DS_Store
