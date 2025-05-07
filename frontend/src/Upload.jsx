@@ -1,4 +1,5 @@
 import { useState } from "react";
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function Upload() {
   const [file, setFile] = useState(null);
@@ -20,7 +21,7 @@ export default function Upload() {
     formData.append("file", file);
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/upload?prompt=${encodeURIComponent(prompt)}`, {
+      const response = await fetch(`${BACKEND_BASE_URL}/upload?prompt=${encodeURIComponent(prompt)}`, {
         method: "POST",
         body: formData,
       });
@@ -49,7 +50,7 @@ export default function Upload() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/upload-url", {
+      const response = await fetch("${BACKEND_BASE_URL}/upload-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, prompt }),

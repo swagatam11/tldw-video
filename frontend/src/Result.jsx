@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function Result() {
   const { jobId } = useParams();
@@ -12,7 +13,7 @@ export default function Result() {
   useEffect(() => {
     const fetchResult = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/result/${jobId}`);
+        const response = await fetch(`${BACKEND_BASE_URL}/result/${jobId}`);
         const data = await response.json();
 
         if (data.transcript && data.summary) {
@@ -31,7 +32,7 @@ export default function Result() {
   const submitQuestion = async () => {
     if (!question.trim()) return;
 
-    const response = await fetch(`http://127.0.0.1:8000/ask/${jobId}`, {
+    const response = await fetch(`${BACKEND_BASE_URL}/ask/${jobId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question }),
