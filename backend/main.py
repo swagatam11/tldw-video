@@ -43,24 +43,28 @@ async def upload_video(request: Request, file: UploadFile = File(...), backgroun
 async def upload_video_by_url(request: Request, background_tasks: BackgroundTasks = None):
     try:
         body = await request.json()
+        print("Payload received by backend:", body)  # Debug log
         url = body.get("url")
         if not url:
+            print("URL missing in request payload")
             return JSONResponse(status_code=400, content={"error": "Missing 'url' in request."})
 
         job_id = str(uuid4())
         jobs[job_id] = {"status": "processing", "filename": "remote-url"}
 
         audio_path = download_audio_from_url(url, job_id)
+        print(f"Audio path after download: {audio_path}")  # Debug log
 
         # Queue processing
         prompt_text = body.get("prompt", "")
         background_tasks.add_task(dummy_process_video, job_id, audio_path, prompt_text)
 
-
         return {"job_id": job_id}
 
     except Exception as e:
+        print("Exception during /upload-url:", traceback.format_exc())  # Detailed log
         return JSONResponse(status_code=400, content={"error": str(e)})
+
 
 @app.post("/ask/{job_id}")
 async def ask_question(job_id: str, request: Request):
