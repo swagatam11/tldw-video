@@ -71,7 +71,9 @@ def download_audio_from_url(url: str, job_id: str) -> str:
 
     result = subprocess.run(command, capture_output=True, text=True)
     if result.returncode != 0:
-        raise Exception("Audio download failed.")
+    print("yt-dlp stderr:", result.stderr.strip())  # ✅ LOG the actual reason
+    raise Exception("Audio download failed.")
+
 
     # Check size
     size_mb = os.path.getsize(audio_path) / (1024 * 1024)
