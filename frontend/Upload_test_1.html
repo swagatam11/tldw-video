@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload – Too Long, Didn't Watch</title>
+
+    <!-- Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: 'Manrope', sans-serif;
+        --primary: #e63946;
+        --secondary: #457b9d;
+        --highlight: #1d3557;
+        --gray-bg: #f3f4f6;
+      }
+
+      body {
+        font-family: 'Manrope', sans-serif;
+      }
+
+      header.container {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 1rem 1.5rem;
+        max-width: 1140px;
+        margin: auto;
+      }
+
+      header nav ul:last-of-type {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      main.container {
+        max-width: 800px;
+        margin: auto;
+        padding: 2rem 1.5rem;
+      }
+
+      .section-heading {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .section-heading::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 4px;
+        background-color: var(--primary);
+        margin: 0.5rem auto 1rem;
+        border-radius: 2px;
+      }
+
+      .input-block {
+        margin: 2rem 0;
+      }
+
+      .upload-grid {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        margin-top: 2rem;
+      }
+
+      .upload-card {
+        border: 2px dashed #ccc;
+        border-radius: 12px;
+        background-color: white;
+        padding: 2rem;
+        text-align: center;
+        transition: border-color 0.2s ease;
+      }
+
+      .upload-card:hover {
+        border-color: var(--primary);
+      }
+
+      .upload-card i {
+        color: #888;
+        margin-bottom: 1rem;
+      }
+
+      .upload-card strong {
+        display: block;
+        color: var(--primary);
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+
+      footer.container {
+        max-width: 1140px;
+        margin: auto;
+        padding: 2rem 1.5rem;
+      }
+
+      footer .grid {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      footer nav ul {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      a[role="button"] {
+    background-color: var(--highlight);
+    color: white;
+    border: none;
+  }
+
+  a[role="button"]:hover {
+    background-color: #13395e;
+  }
+</style>
+  </head>
+  <body>
+    <header class="container">
+      <nav>
+        <ul>
+          <li><strong style="color: var(--primary)">Too Long, Didn’t Watch</strong></li>
+        </ul>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#" role="button">Get Started</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="container">
+      <h2 class="section-heading">Upload Your Video</h2>
+      <p style="text-align: center; color: #555">Share a video file or URL to get started</p>
+
+      <div class="input-block">
+        <textarea placeholder="Optional: What is this video about?" rows="3"></textarea>
+      </div>
+
+      <div class="upload-grid">
+        <div class="upload-card">
+          <i data-lucide="upload" style="width: 32px; height: 32px;"></i>
+          <strong>Choose a file</strong>
+          <p style="color: #777">Supports MP4, WebM, MOV up to 2GB</p>
+          <div style="margin-top: 5rem;"><a href="#" role="button">Upload File</a></div>
+        </div>
+        <div class="upload-card">
+  <i data-lucide="link" style="width: 32px; height: 32px;"></i>
+  <strong>Paste a URL</strong>
+  <p style="color: #777">Supports YouTube, Vimeo, TED and more</p>
+  <input type="url" placeholder="Paste or type URL" style="margin-bottom: 1rem;" />
+  <a href="#" role="button" class="secondary">Submit URL</a>
+</div>
+      </div>
+
+      <p style="text-align: center; margin-top: 2rem; font-size: 0.9rem; color: #666">
+        Need help? Check our <a href="#">guide</a> or <a href="#" style="color: var(--primary)">contact support</a>
+      </p>
+    </main>
+
+    <footer class="container">
+      <hr />
+      <div class="grid">
+        <div>
+          <strong>Too Long, Didn’t Watch</strong><br />
+          <small>Fast, AI-powered video summaries.</small>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Sales</a></li>
+            <li><a href="#">Documentation</a></li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

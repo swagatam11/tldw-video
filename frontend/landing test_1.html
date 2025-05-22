@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TLDW – Analyse Videos Instantly</title>
+
+    <!-- Font: Manrope from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: 'Manrope', sans-serif;
+        --primary: #e63946;
+        --secondary: #457b9d;
+        --highlight: #1d3557;
+        --light-bg: #f9f9f9;
+        --gray-bg: #f3f4f6;
+      }
+
+      body {
+        font-family: 'Manrope', sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      header.container {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+header.container,
+      footer.container {
+        max-width: 1140px;
+        margin: auto;
+        padding: 1rem 1.5rem;
+      }
+
+      main section {
+        padding: 3rem 1rem;
+      }
+
+      section:nth-of-type(even) {
+        background-color: var(--gray-bg);
+      }
+
+      section:nth-of-type(odd) {
+        background-color: white;
+      }
+
+      header nav ul li a[role="button"] {
+        background-color: var(--highlight);
+        color: white;
+      }
+
+      .top-image {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+
+      .top-image img {
+        max-width: 600px;
+        width: 100%;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .cta-below-image {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .cta-below-image a {
+        background-color: var(--primary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+      }
+
+      .cta-below-image a:hover {
+        transform: scale(1.05);
+      }
+
+      .section-heading {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .section-heading::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 4px;
+        background-color: var(--primary);
+        margin: 0.5rem auto 1rem;
+        border-radius: 2px;
+      }
+
+      .how-steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .how-step {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .how-step:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .how-step h3 {
+        margin-top: 0.5rem;
+        margin-bottom: 0.25rem;
+        font-size: 1.2rem;
+      }
+
+      .how-step p {
+        font-size: 0.95rem;
+        color: #444;
+      }
+
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+        text-align: center;
+      }
+
+      .pricing-grid .card {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease;
+      }
+
+      .pricing-grid .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .pricing-grid .popular {
+        border: 2px solid var(--secondary);
+      }
+
+      .pricing-grid .card h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .pricing-grid .card strong {
+        font-size: 1.75rem;
+      }
+
+      .pricing-grid ul li::before {
+        content: '✔';
+        color: green;
+        margin-right: 0.5rem;
+      }
+
+      footer .grid {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      header nav a:hover {
+    text-decoration: underline;
+    color: var(--primary);
+  }
+
+  footer nav ul {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  footer nav ul li a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  footer nav ul li a:hover {
+    text-decoration: underline;
+  }
+</style>
+  </head>
+  <body>
+    <header class="container">
+  <nav>
+    <ul>
+      <li><strong style="color: var(--primary)">Too Long, Didn’t Watch</strong></li>
+    </ul>
+    <ul style="display: flex; gap: 1rem; align-items: center; list-style: none; margin: 0; padding: 0;">
+      <li><a href="#how">How it Works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#" role="button">Get Started</a></li>
+    </ul>
+  </nav>
+</header>
+
+    <main>
+      <section class="top-image">
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 2.5rem;">
+    <img src="Landing_image_1.png" alt="Landing hero image" />
+    <div class="cta-below-image">
+      <a href="#">Try For Free</a>
+    </div>
+  </div>
+</section>
+
+      <section id="how">
+        <div class="container">
+          <h2 class="section-heading">How It Works</h2>
+          <div class="how-steps">
+            <div class="how-step">
+              <h3><i data-lucide="upload"></i> Upload Video</h3>
+              <p>Simply upload your video or paste a URL from YouTubr, vimeo, or other popular platforms</p>
+            </div>
+            <div class="how-step">
+              <h3><i data-lucide="settings"></i> AI Processing</h3>
+              <p>Our AI-powered tools understand your videos and unlock key insights</p>
+            </div>
+            <div class="how-step">
+              <h3><i data-lucide="book-open"></i> Get Insights</h3>
+              <p>Ask follow-up questions tailored to YOUR needs</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing">
+        <div class="container">
+          <h2 class="section-heading">Simple Pricing</h2>
+          <p style="text-align: center">Try for free for upto 3 videos and then choose any of our plans below.</p>
+          <div class="pricing-grid">
+            <article class="card popular">
+              <h3>Pro</h3>
+              <p><strong>$6.99</strong><span style="font-size: 0.9rem;"> /month</span></p>
+              <p><em>Billed monthly</em></p>
+              <div>
+  <p>✔ 5 videos per month</p>
+  <p>✔ Video durations up to 20 minutes</p>
+  <p>✔ Detailed summary and follow up questions</p>
+</div>
+              <a href="#" role="button">Start Pro Trial</a>
+            </article>
+            <article class="card">
+              <h3>Ultra</h3>
+              <p><strong>$14.99</strong><span style="font-size: 0.9rem;"> /month</span></p>
+              <p><em>Billed monthly</em></p>
+              <div>
+  <p>✔ 15 videos per month</p>
+  <p>✔ Videos up to 45 minutes</p>
+  <p>✔ Extensive summary, unlimited follow up questions with customisable chat styles </p>
+</div>
+              <a href="#" role="button" class="secondary">Contact Sales</a>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="container">
+      <hr />
+      <div class="grid">
+        <div>
+          <strong>Too Long, Didn’t Watch</strong><br />
+          <small>Fast, AI-powered video analysis.</small>
+        </div>
+        <nav>
+  <ul>
+    <li><a href="#">Support</a></li>
+    <li><a href="#">Sales</a></li>
+    <li><a href="#">Documentation</a></li>
+  </ul>
+</nav>
+      </div>
+    </footer>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

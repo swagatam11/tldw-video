@@ -10,23 +10,18 @@ export default function Status() {
 
   const getProgressForStatus = (status) => {
     switch (status) {
-      case "processing":
-        return 10;
-      case "audio_extracted":
-        return 30;
-      case "transcribed":
-        return 65;
-      case "done":
-        return 100;
-      default:
-        return 5;
+      case "processing": return 10;
+      case "audio_extracted": return 30;
+      case "transcribed": return 65;
+      case "done": return 100;
+      default: return 5;
     }
   };
 
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/status/${jobId}`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/status/${jobId}`);
         const data = await response.json();
 
         if (data.status === "done") {
@@ -50,21 +45,44 @@ export default function Status() {
   }, [jobId, navigate]);
 
   return (
-    <main className="hero-section">
-      <div className="hero-content">
-        <h2 style={{ marginBottom: "0.5rem" }}>
-          TLDW: <em>Too long, didn’t watch</em>
-        </h2>
-        <h1>Processing Your Video</h1>
-        <p>Status: <strong>{status}</strong></p>
-        <progress value={progress} max="100" style={{ width: "100%", marginBottom: "1rem" }}></progress>
+    <>
+      <header style={headerStyle}>
+        <nav>
+          <ul>
+            <li>
+              <strong style={{ color: "#e63946" }}>Too Long, Didn’t Watch</strong>
+            </li>
+          </ul>
+        </nav>
+      </header>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+      <main className="hero-section">
+        <div className="hero-content">
+          <h2 style={{ marginBottom: "0.5rem" }}>
+            TLDW: <em>Too long, didn’t watch</em>
+          </h2>
+          <h1>Processing Your Video</h1>
+          <p>Status: <strong>{status}</strong></p>
+          <progress value={progress} max="100" style={{ width: "100%", marginBottom: "1rem" }}></progress>
 
-        <p style={{ fontSize: "0.9em", color: "gray" }}>
-          Please wait... you’ll be redirected automatically when it’s ready.
-        </p>
-      </div>
-    </main>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <p style={{ fontSize: "0.9em", color: "gray" }}>
+            Please wait... you’ll be redirected automatically when it’s ready.
+          </p>
+        </div>
+      </main>
+    </>
   );
 }
+
+const headerStyle = {
+  position: "sticky",
+  top: 0,
+  zIndex: 1000,
+  backgroundColor: "white",
+  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+  padding: "1rem 1.5rem",
+  maxWidth: "1140px",
+  margin: "auto",
+};

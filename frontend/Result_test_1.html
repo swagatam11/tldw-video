@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TLDW – Results</title>
+
+  <!-- Fonts and PicoCSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Manrope', sans-serif;
+      --primary: #e63946;
+      --highlight: #1d3557;
+      --gray-bg: #f5f5f5;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      margin: 0;
+    }
+
+    header.container {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 1000;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    header nav a:hover {
+      text-decoration: underline;
+      color: var(--primary);
+    }
+
+    main {
+      max-width: 960px;
+      margin: auto;
+      padding: 2rem 1rem;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tabs button {
+        padding: 0.6rem 1.5rem;
+        border: none;
+        background: #ddd; /* more visible inactive tab */
+        font-weight: 600;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+
+    .tabs button.active {
+      background: var(--highlight);
+      color: white;
+    }
+
+    .output-box {
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      white-space: pre-wrap;
+    }
+
+    .ask-box {
+      margin-top: 2rem;
+      background: #ffffff;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .ask-box textarea {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .ask-box .center-button {
+      display: flex;
+      justify-content: center;
+    }
+
+    .ask-box button {
+      background-color: var(--highlight);
+      color: white;
+    }
+
+    .downloads {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .downloads a {
+      margin: 0 1rem;
+      color: var(--highlight);
+      text-decoration: underline;
+      font-weight: 500;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+      color: #777;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+    <header class="container">
+        <nav>
+          <ul>
+            <li><strong style="color: var(--primary)">Too Long, Didn’t Watch</strong></li>
+          </ul>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="#" role="button">Upload New</a></li>
+          </ul>
+        </nav>
+    </header>
+      
+
+  <main>
+    <h2 style="text-align: center; margin-bottom: 1rem;">Your Video Has Been Transcribed</h2>
+
+    <div class="tabs">
+      <button class="active" onclick="showTab('transcript')">Transcript</button>
+      <button onclick="showTab('summary')">Summary</button>
+    </div>
+
+    <div id="transcript" class="output-box">
+      <h3>Full Transcript</h3>
+      <p>[This is where the full transcript will appear. Replace this with real content once API is connected.]</p>
+    </div>
+
+    <div id="summary" class="output-box" style="display:none">
+      <h3>Executive Summary</h3>
+      <p>[This is where the summary will appear. Replace this with real content once API is connected.]</p>
+    </div>
+
+    <section class="ask-box">
+      <h4>Ask Questions About This Video</h4>
+      <textarea rows="3" placeholder="E.g. What did the speaker say about the economy?"></textarea>
+      <div class="center-button">
+        <button role="button">Ask GPT</button>
+      </div>
+    </section>
+
+    <div class="downloads">
+        <a href="#">Download Transcript</a>
+        <a href="#">Download Summary</a>
+        <a href="#">Download Chat</a>
+      </div>      
+  </main>
+
+  <footer>
+    <hr />
+    <p>© 2025 TLDW | All rights reserved.</p>
+  </footer>
+
+  <script>
+    function showTab(tab) {
+      document.getElementById('transcript').style.display = tab === 'transcript' ? 'block' : 'none';
+      document.getElementById('summary').style.display = tab === 'summary' ? 'block' : 'none';
+
+      document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.tabs button[onclick="showTab('${tab}')"]`).classList.add('active');
+    }
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -16,37 +16,47 @@ export default function Result() {
         const response = await fetch(`${BACKEND_BASE_URL}/result/${jobId}`);
         const data = await response.json();
 
-        if (data.transcript && data.summary) {
+        if (data.status === "error") {
+          setError(data.error || "An unknown error occurred.");
+        } else if (data.transcript && data.enriched_summary) {
           setResult(data);
         } else {
-          setError("Results not available.");
+          setError("Results not yet ready. Please wait.");
         }
-      } catch {
+      } catch (e) {
+        console.error(e);
         setError("Failed to load results.");
       }
     };
-
     fetchResult();
   }, [jobId]);
 
   const submitQuestion = async () => {
     if (!question.trim()) return;
-
     const response = await fetch(`${BACKEND_BASE_URL}/ask/${jobId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question }),
     });
-
     const data = await response.json();
     setAnswer(data.answer || "No answer available.");
+  };
+
+  const downloadFile = (filename, content) => {
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   if (error) {
     return (
       <main>
         <h1>Error</h1>
-        <p style={{ color: "red" }}>{error}</p>
+        <p style={{ color: "red", textAlign: "center" }}>{error}</p>
       </main>
     );
   }
@@ -54,90 +64,56 @@ export default function Result() {
   if (!result) {
     return (
       <main>
-        <h1>Loading Results...</h1>
+        <h1 style={{ textAlign: "center" }}>Loading Results...</h1>
       </main>
     );
   }
 
   return (
-    <main style={{ textAlign: "center" }}>
-      <h1>Transcript & Summary</h1>
+    <>
+      <header style={{ padding: "1rem", textAlign: "center" }}>
+        <strong style={{ color: "#e63946" }}>Too Long, Didn’t Watch</strong>
+      </header>
 
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
-        <nav>
-          <ul style={{ display: "flex", justifyContent: "center", gap: "1rem", listStyle: "none", padding: 0, margin: 0 }}>
-            <li>
-              <a
-                role="button"
-                href="#"
-                onClick={() => setActiveTab("transcript")}
-                aria-current={activeTab === "transcript" ? "page" : undefined}
-              >
-                Full Transcript
-              </a>
-            </li>
-            <li>
-              <a
-                role="button"
-                href="#"
-                onClick={() => setActiveTab("summary")}
-                aria-current={activeTab === "summary" ? "page" : undefined}
-              >
-                Summary
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+      <main style={{ maxWidth: "960px", margin: "auto", padding: "2rem 1rem" }}>
+        <h2 style={{ textAlign: "center" }}>Your Video Has Been Transcribed</h2>
 
-      <article>
-        {activeTab === "transcript" ? (
-          <pre>{result.transcript}</pre>
-        ) : (
-          <pre>{result.summary}</pre>
-        )}
-      </article>
-
-      <div className="download-buttons" style={{ display: "flex", justifyContent: "center", gap: "1rem", margin: "2rem 0" }}>
-        <button onClick={() => downloadFile("transcript.txt", result.transcript)}>
-          Download Transcript
-        </button>
-        <button onClick={() => downloadFile("summary.txt", result.summary)}>
-          Download Summary
-        </button>
-      </div>
-
-      <hr />
-
-      <section style={{ marginTop: "2rem", textAlign: "center" }}>
-        <h2>Ask a question about this video</h2>
-        <div className="question-box" style={{ display: "flex", justifyContent: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-          <input
-            type="text"
-            placeholder="Type your question..."
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-          />
-          <button onClick={submitQuestion}>Submit</button>
+        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "1.5rem" }}>
+          <button onClick={() => setActiveTab("transcript")}>Transcript</button>
+          <button onClick={() => setActiveTab("summary")}>Enriched Summary</button>
         </div>
 
-        {answer && (
-          <blockquote style={{ marginTop: "1rem" }}>
-            <strong>Answer:</strong><br />
-            {answer}
-          </blockquote>
-        )}
-      </section>
-    </main>
-  );
-}
+        <div style={{ padding: "1.5rem", background: "#fff", borderRadius: "0.75rem", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+          <h3>{activeTab === "transcript" ? "Full Transcript" : "Enriched Summary with Slides"}</h3>
+          <p>{activeTab === "transcript" ? result.transcript : result.enriched_summary}</p>
+        </div>
 
-function downloadFile(filename, content) {
-  const blob = new Blob([content], { type: "text/plain" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+        <section style={{ marginTop: "2rem", padding: "1rem", background: "#f9f9f9", borderRadius: "0.5rem" }}>
+          <textarea
+            rows="3"
+            placeholder="Ask GPT questions about this video..."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            style={{ width: "100%", marginBottom: "1rem" }}
+          />
+          <button onClick={submitQuestion}>Ask GPT</button>
+          {answer && (
+            <blockquote style={{ marginTop: "1rem" }}>
+              <strong>Answer:</strong> {answer}
+            </blockquote>
+          )}
+        </section>
+
+        <div className="download-links" style={{ textAlign: "center", marginTop: "2rem" }}>
+          <a href="#" onClick={() => downloadFile("transcript.txt", result.transcript)}>Download Transcript</a>
+          <a href="#" onClick={() => downloadFile("summary.txt", result.enriched_summary)}>Download Enriched Summary</a>
+          <a href="#" onClick={() => downloadFile("chat.txt", answer)}>Download Chat</a>
+        </div>
+      </main>
+
+      <footer style={{ textAlign: "center", padding: "1rem" }}>
+        <small>© 2025 TL;Dw. All rights reserved.</small>
+      </footer>
+    </>
+  );
 }
