@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+
 const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function Result() {
@@ -9,6 +11,16 @@ export default function Result() {
   const [activeTab, setActiveTab] = useState("transcript");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+  const buttonStyle = {
+  backgroundColor: "#1d3557",
+  color: "white",
+  border: "none",
+  padding: "0.5rem 1.25rem",
+  borderRadius: "6px",
+  textDecoration: "none",
+  cursor: "pointer",
+  };
+
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -83,20 +95,37 @@ export default function Result() {
           <button onClick={() => setActiveTab("summary")}>Enriched Summary</button>
         </div>
 
-        <div style={{ padding: "1.5rem", background: "#fff", borderRadius: "0.75rem", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+        <div
+          style={{
+            padding: "1.5rem",
+            background: "#fff",
+            borderRadius: "0.75rem",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+            maxHeight: "400px",        // 👈 tweak height as needed
+            overflowY: "auto",         // 👈 enables vertical scroll
+            whiteSpace: "pre-wrap",    // 👈 keeps line breaks in transcript
+          }}
+        >
           <h3>{activeTab === "transcript" ? "Full Transcript" : "Enriched Summary with Slides"}</h3>
-          <p>{activeTab === "transcript" ? result.transcript : result.enriched_summary}</p>
+          <ReactMarkdown>
+            {activeTab === "transcript" ? result.transcript : result.enriched_summary}
+          </ReactMarkdown>
+
         </div>
+
 
         <section style={{ marginTop: "2rem", padding: "1rem", background: "#f9f9f9", borderRadius: "0.5rem" }}>
           <textarea
             rows="3"
-            placeholder="Ask GPT questions about this video..."
+            placeholder="Type your questions about this video..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             style={{ width: "100%", marginBottom: "1rem" }}
           />
-          <button onClick={submitQuestion}>Ask GPT</button>
+          <div style={{ textAlign: "center" }}>
+            <button onClick={submitQuestion} style={buttonStyle}>Ask AI</button>
+          </div>
+
           {answer && (
             <blockquote style={{ marginTop: "1rem" }}>
               <strong>Answer:</strong> {answer}
@@ -104,11 +133,12 @@ export default function Result() {
           )}
         </section>
 
-        <div className="download-links" style={{ textAlign: "center", marginTop: "2rem" }}>
-          <a href="#" onClick={() => downloadFile("transcript.txt", result.transcript)}>Download Transcript</a>
-          <a href="#" onClick={() => downloadFile("summary.txt", result.enriched_summary)}>Download Enriched Summary</a>
-          <a href="#" onClick={() => downloadFile("chat.txt", answer)}>Download Chat</a>
+        <div style={{ textAlign: "center", marginTop: "2rem", display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
+          <button style={buttonStyle} onClick={() => downloadFile("transcript.txt", result.transcript)}>Download Transcript</button>
+          <button style={buttonStyle} onClick={() => downloadFile("summary.txt", result.enriched_summary)}>Download Enriched Summary</button>
+          <button style={buttonStyle} onClick={() => downloadFile("chat.txt", answer)}>Download Chat</button>
         </div>
+
       </main>
 
       <footer style={{ textAlign: "center", padding: "1rem" }}>

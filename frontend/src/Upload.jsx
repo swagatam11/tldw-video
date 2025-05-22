@@ -74,7 +74,7 @@ function Upload() {
         </nav>
       </header>
 
-      <main style={{ maxWidth: "800px", margin: "auto", padding: "2rem 1.5rem" }}>
+      <main style={{ maxWidth: "1100px", margin: "auto", padding: "2rem 1.5rem" }}>
         <h2 style={headingStyle}>
           Upload Your Video
           <span style={underline}></span>
@@ -210,6 +210,7 @@ const cardStyle = {
   backgroundColor: "white",
   padding: "2rem",
   textAlign: "center",
+  width: "500px",
 };
 
 const iconStyle = {
