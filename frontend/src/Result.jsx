@@ -11,16 +11,22 @@ export default function Result() {
   const [activeTab, setActiveTab] = useState("transcript");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  const buttonStyle = {
-  backgroundColor: "#1d3557",
-  color: "white",
-  border: "none",
-  padding: "0.5rem 1.25rem",
-  borderRadius: "6px",
-  textDecoration: "none",
-  cursor: "pointer",
-  };
+  const [useSlide, setUseSlide] = useState(false);
+  const [slideTimestamp, setSlideTimestamp] = useState(null);
+  const [slideImage, setSlideImage] = useState(null);
+  const [qaCache, setQaCache] = useState({});
+  const [timeHint, setTimeHint] = useState("");
+  const [timeHintError, setTimeHintError] = useState(false);
 
+  const buttonStyle = {
+    backgroundColor: "#1d3557",
+    color: "white",
+    border: "none",
+    padding: "0.5rem 1.25rem",
+    borderRadius: "6px",
+    textDecoration: "none",
+    cursor: "pointer",
+  };
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -43,15 +49,59 @@ export default function Result() {
     fetchResult();
   }, [jobId]);
 
+  const parseTimeHint = (input) => {
+    const parts = input.split(":").map((x) => parseInt(x.trim(), 10));
+    if (parts.length === 1) return parts[0] || 0;
+    if (parts.length === 2) return (parts[0] * 60 + parts[1]) || 0;
+    return 0;
+  };
+
   const submitQuestion = async () => {
     if (!question.trim()) return;
+
+    const hintSeconds = parseTimeHint(timeHint);
+    if (useSlide && !hintSeconds) {
+      setTimeHintError(true);
+      return;
+    }
+    setTimeHintError(false);
+
+    const cacheKey = `${question}::${hintSeconds}`;
+    if (qaCache[cacheKey]) {
+      const cached = qaCache[cacheKey];
+      setAnswer(cached.answer);
+      setSlideTimestamp(cached.slideTimestamp || null);
+      setSlideImage(cached.slideImage || null);
+      return;
+    }
+
     const response = await fetch(`${BACKEND_BASE_URL}/ask/${jobId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question }),
+      body: JSON.stringify({
+        question,
+        use_slide: useSlide,
+        time_hint: hintSeconds,
+      }),
     });
+
     const data = await response.json();
-    setAnswer(data.answer || "No answer available.");
+    const responseAnswer = data.answer || "No answer available.";
+    const responseTimestamp = data.slide_timestamp || null;
+    const responseImage = data.slide_image_url || null;
+
+    setAnswer(responseAnswer);
+    setSlideTimestamp(responseTimestamp);
+    setSlideImage(responseImage);
+
+    setQaCache((prev) => ({
+      ...prev,
+      [cacheKey]: {
+        answer: responseAnswer,
+        slideTimestamp: responseTimestamp,
+        slideImage: responseImage,
+      },
+    }));
   };
 
   const downloadFile = (filename, content) => {
@@ -101,18 +151,16 @@ export default function Result() {
             background: "#fff",
             borderRadius: "0.75rem",
             boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-            maxHeight: "400px",        // 👈 tweak height as needed
-            overflowY: "auto",         // 👈 enables vertical scroll
-            whiteSpace: "pre-wrap",    // 👈 keeps line breaks in transcript
+            maxHeight: "400px",
+            overflowY: "auto",
+            whiteSpace: "pre-wrap",
           }}
         >
           <h3>{activeTab === "transcript" ? "Full Transcript" : "Enriched Summary with Slides"}</h3>
           <ReactMarkdown>
             {activeTab === "transcript" ? result.transcript : result.enriched_summary}
           </ReactMarkdown>
-
         </div>
-
 
         <section style={{ marginTop: "2rem", padding: "1rem", background: "#f9f9f9", borderRadius: "0.5rem" }}>
           <textarea
@@ -122,13 +170,71 @@ export default function Result() {
             onChange={(e) => setQuestion(e.target.value)}
             style={{ width: "100%", marginBottom: "1rem" }}
           />
+
+          {useSlide && (
+            <>
+              <input
+                type="text"
+                placeholder="Approx time (e.g. 0:30 or 90)"
+                value={timeHint}
+                onChange={(e) => setTimeHint(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "0.5rem",
+                  marginBottom: "0.25rem",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                }}
+              />
+              {timeHintError && (
+                <p style={{ color: "#b00020", marginTop: "0.25rem", fontSize: "0.9rem" }}>
+                  Please enter the approximate time (e.g. 0:42) to help locate the relevant slide.
+                </p>
+              )}
+            </>
+          )}
+
           <div style={{ textAlign: "center" }}>
+            <label style={{ marginRight: "1rem" }}>
+              <input
+                type="checkbox"
+                checked={useSlide}
+                onChange={() => setUseSlide(!useSlide)}
+                style={{ marginRight: "0.5rem" }}
+              />
+              Data Deep Dive
+            </label>
             <button onClick={submitQuestion} style={buttonStyle}>Ask AI</button>
           </div>
 
           {answer && (
             <blockquote style={{ marginTop: "1rem" }}>
-              <strong>Answer:</strong> {answer}
+              <strong>Answer:</strong>
+              <ReactMarkdown
+                children={answer}
+                components={{
+                  p: ({ node, ...props }) => <p style={{ margin: "0.5rem 0" }} {...props} />,
+                  li: ({ node, ...props }) => <li style={{ marginBottom: "0.25rem" }} {...props} />,
+                }}
+              />
+              {slideTimestamp !== null && (
+                <p style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>
+                  <em>Slide shown near: {slideTimestamp} sec</em>
+                </p>
+              )}
+              {slideImage && (
+                <div style={{ marginTop: "1rem", textAlign: "center" }}>
+                  <img
+                    src={slideImage}
+                    alt="Slide preview"
+                    style={{
+                      maxWidth: "100%",
+                      borderRadius: "6px",
+                      border: "1px solid #ccc"
+                    }}
+                  />
+                </div>
+              )}
             </blockquote>
           )}
         </section>
@@ -138,7 +244,6 @@ export default function Result() {
           <button style={buttonStyle} onClick={() => downloadFile("summary.txt", result.enriched_summary)}>Download Enriched Summary</button>
           <button style={buttonStyle} onClick={() => downloadFile("chat.txt", answer)}>Download Chat</button>
         </div>
-
       </main>
 
       <footer style={{ textAlign: "center", padding: "1rem" }}>
