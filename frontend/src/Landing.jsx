@@ -1,5 +1,10 @@
-import landingImage from "./assets/Landing_image_1.png";
+import landingImage from "./assets/Landing_image_1.svg";
 import { useEffect } from "react";
+import Lottie from "lottie-react";
+import uploadAnim from "./assets/upload_fig.json";
+import aiAnim from "./assets/processing_fig.json";
+import insightsAnim from "./assets/insight_fig.json";
+
 
 function Landing() {
   
@@ -9,7 +14,7 @@ function Landing() {
       <header style={{ position: "sticky", top: 0, zIndex: 1000, background: "white", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
         <nav>
           <ul>
-            <li><strong style={{ color: "#e63946" }}>Too Long, Didn’t Watch</strong></li>
+            <li><strong style={{ color: "#e63946" }}>Talk2Vid</strong></li>
           </ul>
           <ul style={{ display: "flex", gap: "1rem", alignItems: "center", listStyle: "none", margin: 0, padding: 0 }}>
             <li><a href="#how">How it Works</a></li>
@@ -25,10 +30,10 @@ function Landing() {
             <img
               src={landingImage}
               alt="Landing"
-              style={{ maxWidth: "600px", width: "100%", borderRadius: "0.75rem", boxShadow: "0 4px 16px rgba(0, 0, 0, 0.15)" }}
+              style={{ maxWidth: "1200px", width: "200%", borderRadius: "0.75rem", boxShadow: "0 4px 16px rgba(0, 0, 0, 0.15)" }}
             />
             <div className="cta-below-image" style={{ textAlign: "center", marginBottom: "2rem" }}>
-              <a href="/upload" role="button" style={{ backgroundColor: "#e63946", color: "white", padding: "0.75rem 1.5rem", borderRadius: "8px", textDecoration: "none" }}>Try For Free</a>
+              <a href="/upload" role="button" style={{ backgroundColor: "#e63946", color: "white", padding: "0.75rem 1.5rem", borderRadius: "8px", textDecoration: "none" }}>Try For Free <br /> No credit card, no sign up!</a>
             </div>
           </div>
         </section>
@@ -41,16 +46,19 @@ function Landing() {
             </h2>
             <div className="how-steps" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "2rem", marginTop: "2rem" }}>
               <div className="how-step" style={cardStyle}>
+                <Lottie animationData={uploadAnim} style={{ height: 80 }} />
                 <h3><i data-lucide="upload"></i> Upload Video</h3>
                 <p>Simply upload your video or paste a URL from YouTube, Vimeo, or other popular platforms</p>
               </div>
               <div className="how-step" style={cardStyle}>
+                <Lottie animationData={aiAnim} style={{ height: 80 }} />
                 <h3><i data-lucide="settings"></i> AI Processing</h3>
                 <p>Our AI-powered tools understand your videos and unlock key insights</p>
               </div>
               <div className="how-step" style={cardStyle}>
+                <Lottie animationData={insightsAnim} style={{ height: 80 }} />
                 <h3><i data-lucide="book-open"></i> Get Insights</h3>
-                <p>Ask follow-up questions tailored to YOUR needs</p>
+                <p>Generate accurate transcripts, vision-enriched AI insights, and ask questions with details drawn from individual frames</p>
               </div>
             </div>
           </div>
@@ -62,33 +70,43 @@ function Landing() {
               Simple Pricing
               <span style={{ display: "block", width: "60px", height: "4px", backgroundColor: "#e63946", margin: "0.5rem auto 1rem", borderRadius: "2px" }}></span>
             </h2>
-            <p style={{ textAlign: "center" }}>
-              Try for free for up to 3 videos and then choose any of our plans below.
-            </p>
             <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "2rem", marginTop: "2rem", textAlign: "center" }}>
-              <article className="card popular" style={{ ...cardStyle, border: "2px solid #457b9d" }}>
-                <h3>Pro</h3>
-                <p><strong>$6.99</strong><span style={{ fontSize: "0.9rem" }}> /month</span></p>
-                <p><em>Billed monthly</em></p>
+              <article className="card" style={{ ...cardStyle, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div>
-                  <p>✔ 5 videos per month</p>
-                  <p>✔ Video durations up to 20 minutes</p>
-                  <p>✔ Video analyzer for everday needs</p>
+                  <h3>Pro</h3>
+                  <p><strong>$14.99</strong><span style={{ fontSize: "0.9rem" }}> /month</span></p>
+                  <emph> or </emph>
+                  <p><strong>$159</strong><span style={{ fontSize: "0.9rem" }}> /year</span></p>
+                  <div>
+                    <p>✔ 200 minutes video-analysis per month</p>
+                    <p>✔ Individual video duration up to 40 minutes</p>
+                    <p>✔ Transcription and vision based AI analysis</p>
+                    <p>✔ Chat with your videos</p>
+                    <p>✔ Deep dive analysis into selected video frames</p>
+                  </div>
                 </div>
-                <a href="/upload" role="button">Start Pro Trial</a>
+                <a href="/upload" role="button" className="lift-hover button-link">Sign up for Pro</a>
               </article>
-              <article className="card" style={cardStyle}>
-                <h3>Ultra</h3>
-                <p><strong>$14.99</strong><span style={{ fontSize: "0.9rem" }}> /month</span></p>
-                <p><em>Billed monthly</em></p>
+              <article className="card" style={{ ...cardStyle, border: "2px solid rgb(74, 168, 226)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div>
-                  <p>✔ 15 videos per month</p>
-                  <p>✔ Videos up to 45 minutes</p>
-                  <p>✔ Heavy-duty analysis pipeline for critical tasks</p>
+                  <h3>Ultra</h3>
+                  <p><strong>$29.99</strong><span style={{ fontSize: "0.9rem" }}> /month</span></p>
+                  <emph> or </emph>
+                  <p><strong>$299</strong><span style={{ fontSize: "0.9rem" }}> /year</span></p>
+                  <div>
+                    <p>✔ 500 minutes video-analysis per month</p>
+                    <p>✔ Individual video duration up to 60 minutes</p>
+                    <p>✔ Transcription and vision based AI analysis</p>
+                    <p>✔ Chat with your videos</p>
+                    <p>✔ Deep dive analysis into selected video frames</p>
+                  </div>
                 </div>
-                <a href="#" role="button" className="secondary">Contact Sales</a>
+                <a href="#" role="button" className="secondary lift-hover">Sign up for Ultra</a>
               </article>
             </div>
+            <p style={{ textAlign: "center" }}>
+            For additional video analysis quota or analytics tailored to your needs, contact us. <br /> 
+            </p>
           </div>
         </section>
       </main>
@@ -97,7 +115,7 @@ function Landing() {
         <hr />
         <div className="grid" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
           <div>
-            <strong>Too Long, Didn’t Watch</strong><br />
+            <strong>Talk2Vid</strong><br />
             <small>Fast, AI-powered video analysis.</small>
           </div>
           <nav>

@@ -34,7 +34,7 @@ a {
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #fb0707;
 }
 
 body {
@@ -211,3 +211,17 @@ nav + article {
   width: 320px; /* fixed width for alignment */
 }
 
+.lift-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-block;
+}
+
+.lift-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.lift-hover:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
