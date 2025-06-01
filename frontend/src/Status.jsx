@@ -39,7 +39,7 @@ export default function Status() {
 
           // Set countdown once if available
           if (data.video_duration && countdown === null) {
-            const padded = Math.ceil(data.video_duration * 0.70);
+            const padded = Math.ceil(data.video_duration * 0.90);
             setCountdown(padded);
           }
         }
@@ -105,7 +105,7 @@ export default function Status() {
           )}
           {countdown === 0 && (
             <p style={{ color: "#888", marginTop: "0.5rem" }}>
-              ⏳ We are currently experiencing increased demand, so things are taking a bit longer! Thank you for your patience.
+              ⏳ The analysis is taking a bit longer than expected. This can happen with information rich videos, or when we are facing excess demand. Thank you for your patience.
             </p>
           )}
 
