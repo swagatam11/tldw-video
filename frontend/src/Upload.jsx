@@ -76,7 +76,7 @@ function Upload() {
         </p>
 
 
-        {!(uploadingFile || uploadingUrl) ? (
+        {!uploadingFile ? (
           <div style={uploadGrid}>
             <div style={cardStyle}>
               <i data-lucide="upload" style={iconStyle}></i>
