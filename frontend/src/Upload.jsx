@@ -11,36 +11,6 @@ function Upload() {
   //const [showTooltip, setShowTooltip] = useState(false);
 
 
- // useEffect(() => {
-  //  window.lucide?.createIcons();
- // }, [showTooltip]);
-
-  // const submitUrl = async () => {
-  //   if (!videoUrl.trim()) return;
-  //   setUploadingUrl(true);
-  //   try {
-  //     const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload-url`, {
-  //       url: videoUrl,
-  //       prompt: "",
-  //       speaker_type: "single",
-  //     },
-  //     { timeout: 120000, 
-  //     headers: { "Content-Type": "application/json" } },
-  //     );
-
-    if (res.data.job_id) {
-      setTimeout(() => {
-        window.location.href = `/status/${res.data.job_id}`;
-      }, 10);
-    } else {
-      alert("Upload failed — no job ID received.");
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Failed to upload URL.");
-  }
-};
-
 
   const uploadFile = async () => {
   if (!selectedFile) {
