@@ -24,8 +24,8 @@ function Upload() {
        prompt: "",
       speaker_type: "single",
     },
-    { timeout: 120000 }
-    headers: { "Content-Type": "application/json" } 
+    { timeout: 120000, 
+    headers: { "Content-Type": "application/json" } },
     );
 
     if (res.data.job_id) {
