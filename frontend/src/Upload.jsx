@@ -3,10 +3,10 @@ import echoicLogo from "./assets/echoic_logo_2.png";
 import axios from "axios";
 
 function Upload() {
-  const [videoUrl, setVideoUrl] = useState("");
+  //const [videoUrl, setVideoUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadingFile, setUploadingFile] = useState(false);
-  const [uploadingUrl, setUploadingUrl] = useState(false);
+  //const [uploadingUrl, setUploadingUrl] = useState(false);
   //const [speakerType, setSpeakerType] = useState("single");
   //const [showTooltip, setShowTooltip] = useState(false);
 
@@ -15,18 +15,18 @@ function Upload() {
   //  window.lucide?.createIcons();
  // }, [showTooltip]);
 
-  const submitUrl = async () => {
-  if (!videoUrl.trim()) return;
-  setUploadingUrl(true);
-  try {
-    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload-url`, {
-      url: videoUrl,
-       prompt: "",
-      speaker_type: "single",
-    },
-    { timeout: 120000, 
-    headers: { "Content-Type": "application/json" } },
-    );
+  // const submitUrl = async () => {
+  //   if (!videoUrl.trim()) return;
+  //   setUploadingUrl(true);
+  //   try {
+  //     const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload-url`, {
+  //       url: videoUrl,
+  //       prompt: "",
+  //       speaker_type: "single",
+  //     },
+  //     { timeout: 120000, 
+  //     headers: { "Content-Type": "application/json" } },
+  //     );
 
     if (res.data.job_id) {
       setTimeout(() => {
@@ -102,7 +102,7 @@ function Upload() {
           <span style={underline}></span>
         </h2>
         <p style={{ textAlign: "center", color: "#555" }}>
-          Share a video file or URL to get started
+          Share a video file to get started
         </p>
 
 
@@ -129,37 +129,6 @@ function Upload() {
                 {uploadingFile ? "Uploading..." : "Upload File"}
               </a>
             </div>
-
-            <div style={cardStyle}>
-              <i data-lucide="link" style={iconStyle}></i>
-              <strong style={{ color: "#e63946", margin: "0.5rem 0" }}>Paste a URL</strong>
-              <p style={{ color: "#777" }}>Supports YouTube, Vimeo, TED and more</p>
-              <input
-                type="url"
-                placeholder="Paste or type URL"
-                value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.ctrlKey) {
-                    e.preventDefault();
-                    submitUrl();
-                  }
-                }}
-                style={urlInputStyle}
-              />
-
-              <a
-                href="#"
-                role="button"
-                className="lift-hover button-link"
-                style={buttonStyle}
-                onClick={submitUrl}
-                disabled={uploadingUrl}
-              >
-                {uploadingUrl ? "Submitting..." : "Submit URL"}
-              </a>
-            </div>
-
           </div>
         ) : (
           <div style={{ marginTop: "3rem", textAlign: "center" }}>
