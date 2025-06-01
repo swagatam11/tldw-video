@@ -207,7 +207,7 @@ export default function Result() {
               {normalizeMathBlocks(
                 Array.isArray(result.transcript)
                   ? // join all segments with double-newlines so paragraphs remain separate
-                    result.transcript.map((seg) => seg.text).join("\n\n")
+                    result.transcript.map((seg) => seg.text.trim()).join("\n\n")
                   : // if it's already a single string, just feed it straight in
                     result.transcript
               )}
