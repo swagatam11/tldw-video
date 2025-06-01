@@ -21,9 +21,11 @@ function Upload() {
   try {
     const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload-url`, {
       url: videoUrl,
-      speaker_type: "single", // 👈 new line
+       prompt: "",
+      speaker_type: "single",
     },
-    { timeout: 120000 } 
+    { timeout: 120000 }
+    headers: { "Content-Type": "application/json" } 
     );
 
     if (res.data.job_id) {
