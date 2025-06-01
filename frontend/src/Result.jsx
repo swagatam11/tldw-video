@@ -1,8 +1,32 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import echoicLogo from "./assets/echoic_logo_2.png";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
+
 
 const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+//–– Helper to convert any “[ ... ]” blocks into “$$ ... $$” so KaTeX catches them.  
+//   If your backend already emits `$$ ... $$` or `\[ ... \]`, you can skip or simplify this.
+function normalizeMathBlocks(markdownText) {
+  if (!markdownText) return "";
+
+  return markdownText
+    .replace(/\\\$\$/g, "$$")
+    .replace(/\[\s*([\s\S]*?)\s*\]/g, (_match, inner) => {
+      const cleaned = inner
+        .split("\n")
+        .map((line) => line.replace(/\\\s*$/, ""))
+        .join("\n")
+        .trim();
+
+      const collapsed = cleaned.replace(/\n{2,}/g, "\n");
+
+      return `$$\n${collapsed}\n$$`;
+    });
+}
 
 export default function Result() {
   const { jobId } = useParams();
@@ -17,6 +41,8 @@ export default function Result() {
   const [qaCache, setQaCache] = useState({});
   const [timeHint, setTimeHint] = useState("");
   const [timeHintError, setTimeHintError] = useState(false);
+  const [chatHistory, setChatHistory] = useState([]);
+
 
   const buttonStyle = {
     backgroundColor: "#1d3557",
@@ -93,6 +119,10 @@ export default function Result() {
     setAnswer(responseAnswer);
     setSlideTimestamp(responseTimestamp);
     setSlideImage(responseImage);
+    setChatHistory((prev) => [
+      ...prev,
+      { question, answer: responseAnswer }
+    ]);
 
     setQaCache((prev) => ({
       ...prev,
@@ -134,7 +164,19 @@ export default function Result() {
   return (
     <>
       <header style={{ padding: "1rem", textAlign: "center" }}>
-        <strong style={{ color: "#e63946" }}>Too Long, Didn’t Watch</strong>
+        <nav>
+          <ul>
+            <li>
+              <a href="/">
+                <img
+                  src={echoicLogo}
+                  alt="Echoic logo"
+                  style={{ height: "66px", objectFit: "contain" }}
+                />
+              </a>
+            </li>
+          </ul>
+        </nav>
       </header>
 
       <main style={{ maxWidth: "960px", margin: "auto", padding: "2rem 1rem" }}>
@@ -157,10 +199,28 @@ export default function Result() {
           }}
         >
           <h3>{activeTab === "transcript" ? "Full Transcript" : "Enriched Summary with Slides"}</h3>
-          <ReactMarkdown>
-            {activeTab === "transcript" ? result.transcript : result.enriched_summary}
-          </ReactMarkdown>
-        </div>
+          {activeTab === "transcript" ? (
+            <ReactMarkdown
+              remarkPlugins={[remarkMath]}
+              rehypePlugins={[rehypeKatex]}
+            >
+              {normalizeMathBlocks(
+                Array.isArray(result.transcript)
+                  ? // join all segments with double-newlines so paragraphs remain separate
+                    result.transcript.map((seg) => seg.text).join("\n\n")
+                  : // if it's already a single string, just feed it straight in
+                    result.transcript
+              )}
+            </ReactMarkdown>
+          ) : (
+            <ReactMarkdown
+              remarkPlugins={[remarkMath]}
+              rehypePlugins={[rehypeKatex]}
+            >
+              {normalizeMathBlocks(result.enriched_summary)}
+            </ReactMarkdown>
+          )}
+         </div>
 
         <section style={{ marginTop: "2rem", padding: "1rem", background: "#f9f9f9", borderRadius: "0.5rem" }}>
           <textarea
@@ -168,8 +228,15 @@ export default function Result() {
             placeholder="Type your questions about this video..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.ctrlKey) {
+                e.preventDefault();
+                submitQuestion();
+              }
+            }}
             style={{ width: "100%", marginBottom: "1rem" }}
           />
+
 
           {useSlide && (
             <>
@@ -212,11 +279,14 @@ export default function Result() {
               <strong>Answer:</strong>
               <ReactMarkdown
                 children={answer}
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
                 components={{
                   p: ({ node, ...props }) => <p style={{ margin: "0.5rem 0" }} {...props} />,
                   li: ({ node, ...props }) => <li style={{ marginBottom: "0.25rem" }} {...props} />,
                 }}
               />
+
               {slideTimestamp !== null && (
                 <p style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>
                   <em>Slide shown near: {slideTimestamp} sec</em>
@@ -242,12 +312,38 @@ export default function Result() {
         <div style={{ textAlign: "center", marginTop: "2rem", display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
           <button style={buttonStyle} onClick={() => downloadFile("transcript.txt", result.transcript)}>Download Transcript</button>
           <button style={buttonStyle} onClick={() => downloadFile("summary.txt", result.enriched_summary)}>Download Enriched Summary</button>
-          <button style={buttonStyle} onClick={() => downloadFile("chat.txt", answer)}>Download Chat</button>
+          <button
+            style={buttonStyle}
+            onClick={() => {
+              const content = chatHistory.map(
+                (pair, idx) => `Q${idx + 1}: ${pair.question}\nA${idx + 1}: ${pair.answer}\n`
+              ).join("\n---\n");
+              downloadFile("chat.txt", content);
+            }}
+          >
+            Download Chat
+          </button>
+
         </div>
+        <div style={{ marginTop: "2rem", paddingTop: "1rem", borderTop: "1px solid #ccc" }}>
+          <p style={{ fontSize: "0.95rem", color: "#555", lineHeight: "1.4" }}>
+            Spare a minute to help us improve?<br />
+            <a
+              href="https://forms.gle/j9EDhLVWeWqDYheW8"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#007bff", textDecoration: "underline", fontWeight: "500" }}
+            >
+              Click here to give feedback →
+            </a>
+          </p>
+        </div>
+
+
       </main>
 
       <footer style={{ textAlign: "center", padding: "1rem" }}>
-        <small>© 2025 TL;Dw. All rights reserved.</small>
+        <small>© 2025 echoic. All rights reserved.</small>
       </footer>
     </>
   );

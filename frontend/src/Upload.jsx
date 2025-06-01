@@ -1,61 +1,74 @@
 import { useEffect, useState } from "react";
+import echoicLogo from "./assets/echoic_logo_2.png";
 import axios from "axios";
 
 function Upload() {
   const [videoUrl, setVideoUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [uploadingUrl, setUploadingUrl] = useState(false);
+  //const [speakerType, setSpeakerType] = useState("single");
+  //const [showTooltip, setShowTooltip] = useState(false);
 
-  useEffect(() => {
-    window.lucide?.createIcons();
-  }, []);
+
+ // useEffect(() => {
+  //  window.lucide?.createIcons();
+ // }, [showTooltip]);
 
   const submitUrl = async () => {
-    if (!videoUrl.trim()) return;
-    setIsUploading(true);
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload-url`, {
-        url: videoUrl,
-      });
-      if (res.data.job_id) {
+  if (!videoUrl.trim()) return;
+  setUploadingUrl(true);
+  try {
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload-url`, {
+      url: videoUrl,
+      speaker_type: "single", // 👈 new line
+    },
+    { timeout: 120000 } 
+    );
+
+    if (res.data.job_id) {
+      setTimeout(() => {
         window.location.href = `/status/${res.data.job_id}`;
-      } else {
-        alert("Upload failed — no job ID received.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Failed to upload URL.");
-    } finally {
-      setIsUploading(false);
+      }, 10);
+    } else {
+      alert("Upload failed — no job ID received.");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Failed to upload URL.");
+  }
+};
+
 
   const uploadFile = async () => {
-    if (!selectedFile) {
-      alert("Please select a file.");
-      return;
-    }
-    setIsUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
+  if (!selectedFile) {
+    alert("Please select a file.");
+    return;
+  }
+  setUploadingFile(true);
+  try {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("speaker_type", "single"); // 👈 new line
 
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 120000
+    });
 
-      if (res.data.job_id) {
+    if (res.data.job_id) {
+      setTimeout(() => {
         window.location.href = `/status/${res.data.job_id}`;
-      } else {
-        alert("Upload failed — no job ID received.");
-      }
-    } catch (err) {
-      console.error("File upload error", err);
-      alert("Failed to upload file.");
-    } finally {
-      setIsUploading(false);
+      }, 10);
+    } else {
+      alert("Upload failed — no job ID received.");
     }
-  };
+  } catch (err) {
+    console.error("File upload error", err);
+    alert("Failed to upload file.");
+  }
+};
+
 
   return (
     <>
@@ -63,8 +76,15 @@ function Upload() {
         <nav>
           <ul>
             <li>
-              <strong style={{ color: "#e63946" }}>Too Long, Didn’t Watch</strong>
+              <a href="/">
+                <img
+                  src={echoicLogo}
+                  alt="Echoic logo"
+                  style={{ height: "66px", objectFit: "contain" }}
+                />
+              </a>
             </li>
+
           </ul>
           <ul style={navRight}>
             <li><a href="#features">Features</a></li>
@@ -83,70 +103,110 @@ function Upload() {
           Share a video file or URL to get started
         </p>
 
-        <div style={{ margin: "2rem 0" }}>
-          <textarea
-            rows="3"
-            placeholder="Optional: What is this video about?"
-            style={textareaStyle}
-          ></textarea>
-        </div>
 
-        <div style={uploadGrid}>
-          <div style={cardStyle}>
-            <i data-lucide="upload" style={iconStyle}></i>
-            <strong style={{ color: "#e63946", margin: "0.5rem 0" }}>Choose a file</strong>
-            <p style={{ color: "#777" }}>Supports MP4, WebM, MOV up to 2GB</p>
-            <input
-              type="file"
-              accept="video/*"
-              onChange={(e) => setSelectedFile(e.target.files[0])}
-              style={fileInputStyle}
-            />
-            <a
-              href="#"
-              role="button"
-              style={buttonStyle}
-              onClick={uploadFile}
-              disabled={isUploading}
-            >
-              {isUploading ? "Uploading..." : "Upload File"}
-            </a>
-          </div>
+        {!(uploadingFile || uploadingUrl) ? (
+          <div style={uploadGrid}>
+            <div style={cardStyle}>
+              <i data-lucide="upload" style={iconStyle}></i>
+              <strong style={{ color: "#e63946", margin: "0.5rem 0" }}>Choose a file</strong>
+              <p style={{ color: "#777" }}>Supports MP4, WebM, MOV up to 2GB</p>
+              <input
+                type="file"
+                accept="video/*"
+                onChange={(e) => setSelectedFile(e.target.files[0])}
+                style={fileInputStyle}
+              />
+              <a
+                href="#"
+                role="button"
+                className="lift-hover button-link"
+                style={buttonStyle}
+                onClick={uploadFile}
+                disabled={uploadingFile}
+              >
+                {uploadingFile ? "Uploading..." : "Upload File"}
+              </a>
+            </div>
 
-          <div style={cardStyle}>
-            <i data-lucide="link" style={iconStyle}></i>
-            <strong style={{ color: "#e63946", margin: "0.5rem 0" }}>Paste a URL</strong>
-            <p style={{ color: "#777" }}>Supports YouTube, Vimeo, TED and more</p>
-            <input
-              type="url"
-              placeholder="Paste or type URL"
-              value={videoUrl}
-              onChange={(e) => setVideoUrl(e.target.value)}
-              style={urlInputStyle}
-            />
-            <a
-              href="#"
-              role="button"
-              className="secondary"
-              onClick={submitUrl}
-              disabled={isUploading}
-            >
-              {isUploading ? "Submitting..." : "Submit URL"}
-            </a>
+            <div style={cardStyle}>
+              <i data-lucide="link" style={iconStyle}></i>
+              <strong style={{ color: "#e63946", margin: "0.5rem 0" }}>Paste a URL</strong>
+              <p style={{ color: "#777" }}>Supports YouTube, Vimeo, TED and more</p>
+              <input
+                type="url"
+                placeholder="Paste or type URL"
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.ctrlKey) {
+                    e.preventDefault();
+                    submitUrl();
+                  }
+                }}
+                style={urlInputStyle}
+              />
+
+              <a
+                href="#"
+                role="button"
+                className="lift-hover button-link"
+                style={buttonStyle}
+                onClick={submitUrl}
+                disabled={uploadingUrl}
+              >
+                {uploadingUrl ? "Submitting..." : "Submit URL"}
+              </a>
+            </div>
+
           </div>
-        </div>
+        ) : (
+          <div style={{ marginTop: "3rem", textAlign: "center" }}>
+            <p style={{ fontSize: "1.25rem", color: "#333", marginBottom: "1rem" }}>
+              Processing your video. Please wait...
+            </p>
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 38 38"
+              xmlns="http://www.w3.org/2000/svg"
+              stroke="#1d3557"
+            >
+              <g fill="none" fillRule="evenodd">
+                <g transform="translate(1 1)" strokeWidth="2">
+                  <circle strokeOpacity=".3" cx="18" cy="18" r="18" />
+                  <path d="M36 18c0-9.94-8.06-18-18-18">
+                    <animateTransform
+                      attributeName="transform"
+                      type="rotate"
+                      from="0 18 18"
+                      to="360 18 18"
+                      dur="1s"
+                      repeatCount="indefinite"
+                    />
+                  </path>
+                </g>
+              </g>
+            </svg>
+          </div>
+        )}
+
+
+        
+
+        
 
         <p style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.9rem", color: "#666" }}>
           Need help? Check our <a href="#">guide</a> or{" "}
           <a href="#" style={{ color: "#e63946" }}>contact support</a>
         </p>
+
       </main>
 
       <footer style={{ maxWidth: "1140px", margin: "auto", padding: "2rem 1.5rem" }}>
         <hr />
         <div style={footerGrid}>
           <div>
-            <strong>Too Long, Didn’t Watch</strong><br />
+            <img src={echoicLogo} alt="Echoic logo" style={{ height: "28px", objectFit: "contain" }} /><br />
             <small>Fast, AI-powered video summaries.</small>
           </div>
           <nav>
@@ -163,6 +223,7 @@ function Upload() {
 }
 
 // === Styles ===
+
 const headerStyle = {
   position: "sticky",
   top: 0,
@@ -202,6 +263,7 @@ const uploadGrid = {
   gap: "2rem",
   gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
   marginTop: "2rem",
+  alignItems: "start",
 };
 
 const cardStyle = {
@@ -210,7 +272,10 @@ const cardStyle = {
   backgroundColor: "white",
   padding: "2rem",
   textAlign: "center",
-  width: "500px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  height: "100%",
 };
 
 const iconStyle = {
@@ -232,8 +297,9 @@ const buttonStyle = {
 };
 
 const fileInputStyle = {
-  margin: "1rem 0",
-  padding: "0.75rem",
+  margin: "1rem 0 2rem",
+  marginBottom: "1.5rem",
+  padding: "0.35rem",
   borderRadius: "8px",
   border: "1px dashed #ccc",
   width: "100%",
@@ -241,7 +307,7 @@ const fileInputStyle = {
 
 const urlInputStyle = {
   width: "100%",
-  margin: "1rem 0",
+  margin: "1rem 0 2rem",
   padding: "0.75rem",
   borderRadius: "8px",
   border: "1px solid #ccc",

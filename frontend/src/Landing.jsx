@@ -4,6 +4,8 @@ import Lottie from "lottie-react";
 import uploadAnim from "./assets/upload_fig.json";
 import aiAnim from "./assets/processing_fig.json";
 import insightsAnim from "./assets/insight_fig.json";
+import echoicLogo from "./assets/echoic_logo_2.png";
+
 
 
 function Landing() {
@@ -14,7 +16,16 @@ function Landing() {
       <header style={{ position: "sticky", top: 0, zIndex: 1000, background: "white", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
         <nav>
           <ul>
-            <li><strong style={{ color: "#e63946" }}>Talk2Vid</strong></li>
+            <li>
+              <a href="/">
+                <img
+                  src={echoicLogo}
+                  alt="Echoic logo"
+                  style={{ height: "66px", objectFit: "contain" }}
+                />
+              </a>
+            </li>
+
           </ul>
           <ul style={{ display: "flex", gap: "1rem", alignItems: "center", listStyle: "none", margin: 0, padding: 0 }}>
             <li><a href="#how">How it Works</a></li>
@@ -30,7 +41,7 @@ function Landing() {
             <img
               src={landingImage}
               alt="Landing"
-              style={{ maxWidth: "1200px", width: "200%", borderRadius: "0.75rem", boxShadow: "0 4px 16px rgba(0, 0, 0, 0.15)" }}
+              style={{ maxWidth: "900px", width: "80%", borderRadius: "0.75rem", boxShadow: "0 4px 16px rgba(0, 0, 0, 0.15)" }}
             />
             <div className="cta-below-image" style={{ textAlign: "center", marginBottom: "2rem" }}>
               <a href="/upload" role="button" style={{ backgroundColor: "#e63946", color: "white", padding: "0.75rem 1.5rem", borderRadius: "8px", textDecoration: "none" }}>Try For Free <br /> No credit card, no sign up!</a>
@@ -85,7 +96,7 @@ function Landing() {
                     <p>✔ Deep dive analysis into selected video frames</p>
                   </div>
                 </div>
-                <a href="/upload" role="button" className="lift-hover button-link">Sign up for Pro</a>
+                <a href="/upload" role="button" className="lift-hover button-link">Coming soon!</a>
               </article>
               <article className="card" style={{ ...cardStyle, border: "2px solid rgb(74, 168, 226)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div>
@@ -101,7 +112,7 @@ function Landing() {
                     <p>✔ Deep dive analysis into selected video frames</p>
                   </div>
                 </div>
-                <a href="#" role="button" className="secondary lift-hover">Sign up for Ultra</a>
+                <a href="#" role="button" className="secondary lift-hover">Coming soon!</a>
               </article>
             </div>
             <p style={{ textAlign: "center" }}>
@@ -115,7 +126,7 @@ function Landing() {
         <hr />
         <div className="grid" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
           <div>
-            <strong>Talk2Vid</strong><br />
+            <img src={echoicLogo} alt="Echoic logo" style={{ height: "28px", objectFit: "contain" }} /><br />
             <small>Fast, AI-powered video analysis.</small>
           </div>
           <nav>
