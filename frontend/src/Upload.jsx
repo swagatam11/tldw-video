@@ -81,7 +81,7 @@ function Upload() {
             <div style={cardStyle}>
               <i data-lucide="upload" style={iconStyle}></i>
               <strong style={{ color: "#e63946", margin: "0.5rem 0" }}>Choose a file</strong>
-              <p style={{ color: "#777" }}>Supports MP4, WebM, MOV up to 2GB</p>
+              <p style={{ color: "#777" }}>Supports MP4, MP3, WebM, WAV, M4a, MOV up to 2GB</p>
               <input
                 type="file"
                 accept="video/*"
@@ -137,8 +137,7 @@ function Upload() {
         
 
         <p style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.9rem", color: "#666" }}>
-          Need help? Check our <a href="#">guide</a> or{" "}
-          <a href="#" style={{ color: "#e63946" }}>contact support</a>
+        By uploading, you confirm that you have the rights to use this video and accept responsibility for the video's content and use.
         </p>
 
       </main>
