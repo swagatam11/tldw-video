@@ -213,10 +213,10 @@ export default function Result() {
               rehypePlugins={[rehypeKatex]}
             >
               {normalizeMathBlocks(
-              Array.isArray(result.transcript)
-                ? result.transcript.map((seg) => escapeLiteralDollars(seg.text.trim())).join("\n\n")
-                : escapeLiteralDollars(result.transcript)
-            )}
+                Array.isArray(result.transcript)
+                  ? result.transcript.map((seg) => escapeLiteralDollars(seg.text.trim())).join("\n\n")
+                  : escapeLiteralDollars(result.transcript)
+              )}
             </ReactMarkdown>
           ) : (
             <ReactMarkdown
