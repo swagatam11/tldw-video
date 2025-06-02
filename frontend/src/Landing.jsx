@@ -29,7 +29,7 @@ function Landing() {
           </ul>
           <ul style={{ display: "flex", gap: "1rem", alignItems: "center", listStyle: "none", margin: 0, padding: 0 }}>
             <li><a href="#how">How it Works</a></li>
-            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#pricing">Products</a></li>
             <li><a href="/upload" role="button">Get Started</a></li>
           </ul>
         </nav>
@@ -59,17 +59,17 @@ function Landing() {
               <div className="how-step" style={cardStyle}>
                 <Lottie animationData={uploadAnim} style={{ height: 80 }} />
                 <h3><i data-lucide="upload"></i> Upload Video</h3>
-                <p>Simply upload your video or paste a URL from YouTube, Vimeo, or other popular platforms</p>
+                <p>Simply upload your video. For this public beta, video length is capped at 10 mins.</p> <p> We will start accepting longer videos soon! </p>
               </div>
               <div className="how-step" style={cardStyle}>
                 <Lottie animationData={aiAnim} style={{ height: 80 }} />
                 <h3><i data-lucide="settings"></i> AI Processing</h3>
-                <p>Our AI-powered tools understand your videos and unlock key insights</p>
+                <p>Our AI-powered tools "see" your videos, identify information-rich scenes and extract accurate transcripts in minutes.</p>
               </div>
               <div className="how-step" style={cardStyle}>
                 <Lottie animationData={insightsAnim} style={{ height: 80 }} />
                 <h3><i data-lucide="book-open"></i> Get Insights</h3>
-                <p>Generate accurate transcripts, vision-enriched AI insights, and ask questions with details drawn from individual frames</p>
+                <p>Chat with your videos!</p> <p> Ask questions with details drawn from individual frames, and download overall vision-enriched insights.</p>
               </div>
             </div>
           </div>
@@ -85,25 +85,25 @@ function Landing() {
               <article className="card" style={{ ...cardStyle, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div>
                   <h3>Pro</h3>
-                  <p><strong>$14.99</strong><span style={{ fontSize: "0.9rem" }}> /month</span></p>
+                  {/* <p><strong>$8.99</strong><span style={{ fontSize: "0.9rem" }}> /month</span></p>
                   <emph> or </emph>
-                  <p><strong>$159</strong><span style={{ fontSize: "0.9rem" }}> /year</span></p>
+                  <p><strong>$89</strong><span style={{ fontSize: "0.9rem" }}> /year</span></p> */}
                   <div>
-                    <p>✔ 200 minutes video-analysis per month</p>
+                    <p>✔ 120 minutes video-analysis per month</p>
                     <p>✔ Individual video duration up to 40 minutes</p>
                     <p>✔ Transcription and vision based AI analysis</p>
                     <p>✔ Chat with your videos</p>
                     <p>✔ Deep dive analysis into selected video frames</p>
                   </div>
                 </div>
-                <a href="/upload" role="button" className="lift-hover button-link">Coming soon!</a>
+                <a href="#" role="button" className="lift-hover button-link">Coming soon!</a>
               </article>
               <article className="card" style={{ ...cardStyle, border: "2px solid rgb(74, 168, 226)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div>
                   <h3>Ultra</h3>
-                  <p><strong>$29.99</strong><span style={{ fontSize: "0.9rem" }}> /month</span></p>
+                  {/* <p><strong>$28.99</strong><span style={{ fontSize: "0.9rem" }}> /month</span></p>
                   <emph> or </emph>
-                  <p><strong>$299</strong><span style={{ fontSize: "0.9rem" }}> /year</span></p>
+                  <p><strong>$289</strong><span style={{ fontSize: "0.9rem" }}> /year</span></p> */}
                   <div>
                     <p>✔ 500 minutes video-analysis per month</p>
                     <p>✔ Individual video duration up to 60 minutes</p>

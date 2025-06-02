@@ -59,8 +59,8 @@ function Upload() {
 
           </ul>
           <ul style={navRight}>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#pricing">Pricing</a></li>
+            {/*<li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>*/}
             <li><a href="/" role="button">Get Started</a></li>
           </ul>
         </nav>
@@ -80,8 +80,8 @@ function Upload() {
           <div style={uploadGrid}>
             <div style={cardStyle}>
               <i data-lucide="upload" style={iconStyle}></i>
-              <strong style={{ color: "#e63946", margin: "0.5rem 0" }}>Choose a file</strong>
-              <p style={{ color: "#777" }}>Supports MP4, MP3, WebM, WAV, M4a, MOV up to 2GB</p>
+              <strong style={{ color: "#66D9E8", margin: "0.5rem 0" }}>Choose a file</strong>
+              <p style={{ color: "#777" }}>We support MP4, MP3, WebM, WAV, M4a, MOV files</p>
               <input
                 type="file"
                 accept="video/*"

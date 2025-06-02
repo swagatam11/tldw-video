@@ -113,7 +113,7 @@ export default function Status() {
           {error && <p style={{ color: "red" }}>{error}</p>}
 
           <p style={{ fontSize: "0.9em", color: "gray" }}>
-            Please wait... you’ll be redirected automatically when it’s ready.
+            Please wait... you’ll be redirected automatically when results are ready.
           </p>
         </div>
       </main>

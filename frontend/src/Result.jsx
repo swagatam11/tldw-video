@@ -7,6 +7,7 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
 
+
 const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 //–– Helper to convert any “[ ... ]” blocks into “$$ ... $$” so KaTeX catches them.  
 //   If your backend already emits `$$ ... $$` or `\[ ... \]`, you can skip or simplify this.
@@ -26,6 +27,13 @@ function normalizeMathBlocks(markdownText) {
 
       return `$$\n${collapsed}\n$$`;
     });
+}
+
+function escapeLiteralDollars(text) {
+  // Escape any $ that is NOT part of an inline/display math expression
+  // This escapes all $ that are not between word boundaries (e.g., $9 billion → \$9 billion)
+  // WARNING: this will escape actual math $ too!
+  return text.replace(/\$/g, '\\$');
 }
 
 export default function Result() {
@@ -205,12 +213,10 @@ export default function Result() {
               rehypePlugins={[rehypeKatex]}
             >
               {normalizeMathBlocks(
-                Array.isArray(result.transcript)
-                  ? // join all segments with double-newlines so paragraphs remain separate
-                    result.transcript.map((seg) => seg.text.trim()).join("\n\n")
-                  : // if it's already a single string, just feed it straight in
-                    result.transcript
-              )}
+              Array.isArray(result.transcript)
+                ? result.transcript.map((seg) => escapeLiteralDollars(seg.text.trim())).join("\n\n")
+                : escapeLiteralDollars(result.transcript)
+            )}
             </ReactMarkdown>
           ) : (
             <ReactMarkdown
