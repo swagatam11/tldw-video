@@ -212,19 +212,25 @@ export default function Result() {
               remarkPlugins={[remarkMath]}
               rehypePlugins={[rehypeKatex]}
             >
-              {normalizeMathBlocks(
-                Array.isArray(result.transcript)
-                  ? result.transcript.map((seg) => escapeLiteralDollars(seg.text.trim())).join("\n\n")
-                  : escapeLiteralDollars(result.transcript)
+              {result && result.transcript && (
+                normalizeMathBlocks(
+                  Array.isArray(result.transcript)
+                    ? result.transcript
+                        .filter((seg) => seg && seg.text) // safeguard for null/undefined segments
+                        .map((seg) => escapeLiteralDollars(seg.text.trim()))
+                        .join("\n\n")
+                    : escapeLiteralDollars(String(result.transcript))
+                )
               )}
+
             </ReactMarkdown>
           ) : (
             <ReactMarkdown
-              remarkPlugins={[remarkMath]}
-              rehypePlugins={[rehypeKatex]}
-            >
-              {normalizeMathBlocks(result.enriched_summary)}
-            </ReactMarkdown>
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+              >
+                {result.enriched_summary}
+              </ReactMarkdown>
           )}
          </div>
 
