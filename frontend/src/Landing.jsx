@@ -30,8 +30,20 @@ function Landing() {
           <ul style={{ display: "flex", gap: "1rem", alignItems: "center", listStyle: "none", margin: 0, padding: 0 }}>
             <li><a href="#how">How it Works</a></li>
             <li><a href="#pricing">Products</a></li>
+            <li>
+              <a
+                href="mailto:echoic.ss@gmail.com"
+                style={{
+                  fontWeight: "500",
+                  cursor: "pointer"
+                }}
+              >
+                Contact
+              </a>
+            </li>
             <li><a href="/upload" role="button">Get Started</a></li>
           </ul>
+
         </nav>
       </header>
 
@@ -115,8 +127,15 @@ function Landing() {
                 <a href="#" role="button" className="secondary lift-hover">Coming soon!</a>
               </article>
             </div>
-            <p style={{ textAlign: "center" }}>
-            For additional video analysis quota or analytics tailored to your needs, contact us. <br /> 
+             <p style={{ textAlign: "center" }}>
+              For additional video analysis quota or analytics tailored to your needs,{" "}
+              <a
+                href="mailto:echoic.ss@gmail.com"
+                style={{ color: "#007bff", textDecoration: "underline", cursor: "pointer" }}
+              >
+                contact us
+              </a>
+              .<br />
             </p>
           </div>
         </section>
