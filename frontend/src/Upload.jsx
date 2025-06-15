@@ -35,10 +35,19 @@ function Upload() {
     } else {
       alert("Upload failed — no job ID received.");
     }
-  } catch (err) {
+  }  catch (err) {
+    const detail = err?.response?.data?.detail;
+
+    if (detail?.includes("Uploaded file too large")) {
+      alert("⚠️ Your video file is too large. Please upload a file under 150MB.");
+    } else if (detail?.includes("Audio file too large")) {
+      alert("⚠️ The audio extracted from your video is too large for transcription (must be under 25MB). Try compressing or trimming your video.");
+    } else {
+      alert("❌ Upload failed. Please try again.");
+    }
+
     console.error("File upload error", err);
-    alert("Failed to upload file.");
-  }
+  } 
 };
 
 
